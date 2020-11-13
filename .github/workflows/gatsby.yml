@@ -1,4 +1,4 @@
-name: 'Gatsby build only on PR'
+name: "Gatsby build only on PR"
 
 on:
   pull_request:
@@ -17,8 +17,6 @@ jobs:
       - name: Npm Install
         run: |
           npm i
-      - name: Lint
-        run: npm run lint
       - name: PR Branch Name
         uses: mdecoleman/pr-branch-name@1.0.0
         id: branchname
@@ -58,27 +56,15 @@ jobs:
       - name: Build and deploy to gh-pages
         uses: sauloxd/review-apps@v1.3.2
         with:
-          build-cmd: 'npx gatsby build --prefix-paths'
-          branch: 'gh-pages'
-          dist: 'public'
-          slug: 'review-apps'
+          build-cmd: "npx gatsby build --prefix-paths"
+          branch: "gh-pages"
+          dist: "public"
+          slug: "review-apps"
       - name: Comment URL on PR
         uses: unsplash/comment-on-pr@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHA: ${{ github.event.pull_request.head.sha }}
         with:
-          msg: 'https://${{env.GITHUB_REPOSITORY_OWNER_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME}}/review-apps/${{steps.branchname.outputs.branch}}/${{steps.slug.outputs.sha6}}?version=${{steps.slug7.outputs.sha7}}'
+          msg: "https://${{env.GITHUB_REPOSITORY_OWNER_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME}}/review-apps/${{steps.branchname.outputs.branch}}/${{steps.slug.outputs.sha6}}?version=${{steps.slug7.outputs.sha7}}"
           check_for_duplicate_msg: false
-  test:
-    name: After Build test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Sleep for 15 minutes
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '15m'
-      - name: Lighthouse Audit
-        uses: jakejarvis/lighthouse-action@master
-        with:
-          url: 'https://${{env.GITHUB_REPOSITORY_OWNER_SLUG}}.github.io/${{env.GITHUB_REPOSITORY_NAME}}/review-apps/${{steps.branchname.outputs.branch}}/${{steps.slug.outputs.sha6}}?version=${{steps.slug7.outputs.sha7}}'
